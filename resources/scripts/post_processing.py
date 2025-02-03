@@ -152,7 +152,7 @@ def maxheadingnumberdepth(data:str, maxlevel:int = 6) -> str:
     # Match all headings without extra pandoc parameters
     regex_headings = fr"^(?!.*unnumbered)(#{{{maxlevel},7}}.*?)({{(.*)}}|)\n"
 
-    data = re.sub(regex_headings, r"\g<1> {{.unnumbered \g<3>}}\n", data, flags=re.MULTILINE)
+    data = re.sub(regex_headings, r"\g<1> {.unnumbered \g<3>}\n", data, flags=re.MULTILINE)
 
     return data
 
