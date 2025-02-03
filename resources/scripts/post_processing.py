@@ -114,11 +114,11 @@ def fixfootnotes(data:str) -> str:
         Dan worden beide aangepast omdat de nummer hetzelfde is in de match
     """
 
-    matches = re.findall(r".(\[\^[a-zA-Z0-9-_ ]+\])", data)
+    matches = re.findall(r"[^`](\[\^[a-zA-Z0-9-_ ]+\])[^`]", data)
     for index, match in enumerate(matches):
         data = re.sub(re.escape(match), f"[^footnote-{index}]", data)
 
-    matches = re.findall(r".(\[\^[a-zA-Z0-9-_ ]+\])", data)
+    matches = re.findall(r"[^`](\[\^[a-zA-Z0-9-_ ]+\])[^`]", data)
     for index, match in enumerate(matches):
         data = re.sub(re.escape(match), f"[^{index + 1}]", data)
 
