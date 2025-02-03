@@ -27,7 +27,14 @@ cp -r book-example/ book
 cd book
 ```
 
+Install needed packages
+
+```
+sudo tlmgr update --self
+```
+
 Then initialize your seperate git repo in the book folder. Be sure to check and modify `meta.yml` and `pandoc.yml`
+
 
 ## Folders
 

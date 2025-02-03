@@ -2,9 +2,31 @@
 
 import re
 import sys
-import yaml
-from typing import List
 from pprint import pprint
+from typing import List
+
+import yaml
+
+
+def fiximages(data:str, book_folder:str) -> str:
+    """Fixes images string for relative paths so that we can properly generate a pdf
+
+    Args:
+        data (str): the file text
+        book_folder (str): the folder that contains the image files
+
+    Returns:
+        str: the fixed file text
+    """
+    # sed -i 's#../images#$(BOOK_FOLDER)/images#g' $(BUILD)/markdown/$(OUTPUT_FILENAME)_body.md
+	# sed -i 's#../images#$(BOOK_FOLDER)/images#g' $(BUILD)/markdown/$(OUTPUT_FILENAME)_backmatter.md
+    
+    re_search = r"\.\./images"
+    re_replace = fr'{re.escape(book_folder)}/images'
+
+    data = re.sub(re_search, re_replace, data, flags=re.MULTILINE)
+
+    return data
 
 def splitchapters(data:str, chapters:List) -> str:
     """
@@ -130,18 +152,22 @@ def maxheadingnumberdepth(data:str, maxlevel:int = 6) -> str:
     # Match all headings without extra pandoc parameters
     regex_headings = fr"^(?!.*unnumbered)(#{{{maxlevel},7}}.*?)({{(.*)}}|)\n"
 
-    data = re.sub(regex_headings, fr"\g<1> {{.unnumbered \g<3>}}\n", data, flags=re.MULTILINE)
+    data = re.sub(regex_headings, r"\g<1> {{.unnumbered \g<3>}}\n", data, flags=re.MULTILINE)
 
     return data
 
 # Bijv, Bijv., bijv en bijv. fixen
 
-with open(f'{sys.argv[2]}/meta.yml', 'r') as yaml_file:
+book_file = sys.argv[1]
+book_folder = sys.argv[2]
+
+with open(f'{book_folder}/meta.yml', 'r') as yaml_file:
     meta_settings = yaml.load(yaml_file, Loader=yaml.SafeLoader)
 
-with open(sys.argv[1], "r+") as file:
+with open(book_file, "r+") as file:
     data = file.read()
 
+    data = fiximages(data, book_folder)
     data = splitchapters(data, meta_settings['split-chapters'])
     data = fixfootnotes(data)
     data = defaultimagesettings(data)
