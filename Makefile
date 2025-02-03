@@ -179,7 +179,6 @@ $(BUILD)/markdown/$(OUTPUT_FILENAME).md:	$(MARKDOWN_DEPENDENCIES)
 	$(BOOK_CONTENT) > $(BUILD)/markdown/$(OUTPUT_FILENAME)_body.md
 	$(BACKMATTER_CONTENT) > $(BUILD)/markdown/$(OUTPUT_FILENAME)_backmatter.md
 	
-	whoami
 	echo "" >> $(BUILD)/markdown/$(OUTPUT_FILENAME)_body.md
 
 	# Content filters and prep - moved to python file
@@ -187,8 +186,7 @@ $(BUILD)/markdown/$(OUTPUT_FILENAME).md:	$(MARKDOWN_DEPENDENCIES)
 	# sed -i 's#../images#$(BOOK_FOLDER)/images#g' $(BUILD)/markdown/$(OUTPUT_FILENAME)_backmatter.md
 	
 	python3 -m venv .venv
-	. ./.venv/bin/activate
-	pip3 install -r requirements.txt
+	. .venv/bin/activate; pip install -Ur requirements.txt
 
 	python3 ./resources/scripts/post_processing.py $(BUILD)/markdown/$(OUTPUT_FILENAME)_body.md $(BOOK_FOLDER)
 	python3 ./resources/scripts/post_processing.py $(BUILD)/markdown/$(OUTPUT_FILENAME)_backmatter.md $(BOOK_FOLDER)
